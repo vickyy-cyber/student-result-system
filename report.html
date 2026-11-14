@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Report Card</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><header><div><p class="eyebrow">ACADEMIC REPORT</p><h1>Student Report Card</h1><p class="sub">{{ student.name }} · {{ student.student_id }}</p></div></header>
+<main><section class="panel">
+<div class="section-head"><h2>Student information</h2><a href="{{ url_for('index') }}">← Back to records</a></div>
+<div class="details"><p><b>Full name:</b> {{ student.name }}</p><p><b>Student ID:</b> {{ student.student_id }}</p><p><b>Class:</b> {{ student['class'] }}</p><p><b>Gender:</b> {{ student.gender }}</p><p><b>Date of birth:</b> {{ student.dob }}</p></div>
+<h2>Subject performance</h2><div class="table-wrap"><table><thead><tr><th>Subject</th><th>Score</th><th>Grade</th></tr></thead><tbody>{% for row in rows %}<tr><td>{{ row.name }}</td><td>{{ row.score }}</td><td><span class="grade">{{ row.grade }}</span></td></tr>{% endfor %}</tbody></table></div>
+<div class="summary"><div><span>Total</span><strong>{{ total }} / 500</strong></div><div><span>Average</span><strong>{{ average }}%</strong></div><div><span>Overall grade</span><strong>{{ overall_grade }}</strong></div></div>
+<button onclick="window.print()">Print report card</button>
+</section></main></body></html>

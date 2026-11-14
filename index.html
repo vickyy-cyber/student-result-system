@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Result Management System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header><div><p class="eyebrow">ACADEMIC RECORDS</p><h1>Student Result Management System</h1>
+<p class="sub">Register students, record scores and view academic performance.</p></div></header>
+<main>
+  {% with messages = get_flashed_messages() %}{% if messages %}<div class="notice">{% for message in messages %}{{ message }}{% endfor %}</div>{% endif %}{% endwith %}
+  <section class="stats"><div class="stat"><span>Registered students</span><strong>{{ students|length }}</strong></div><div class="stat"><span>Class average</span><strong>{{ class_average }}%</strong></div></section>
+  <section class="panel">
+    <h2>Add a student and results</h2>
+    <form action="{{ url_for('add_student') }}" method="post">
+      <div class="form-grid">
+        <label>Student ID<input name="student_id" required placeholder="e.g. STU001"></label>
+        <label>Full name<input name="name" required placeholder="Student's full name"></label>
+        <label>Class / Form<input name="student_class" required placeholder="e.g. SS2"></label>
+        <label>Gender<select name="gender" required><option value="">Choose</option><option>Male</option><option>Female</option><option>Other</option></select></label>
+        <label>Date of birth<input type="date" name="dob" required></label>
+      </div>
+      <h3>Subject scores <small>(0–100)</small></h3>
+      <div class="form-grid scores">{% for subject in subjects %}<label>{{ subject }}<input type="number" name="{{ subject }}" min="0" max="100" step="0.01" required placeholder="0–100"></label>{% endfor %}</div>
+      <button type="submit">Save student</button>
+    </form>
+  </section>
+  <section class="panel">
+    <div class="section-head"><div><h2>Student records</h2><p class="muted">Select a student to open their report card.</p></div>
+    <div class="sort"><a class="{% if sort_by == 'name' %}active{% endif %}" href="{{ url_for('index', sort='name') }}">Sort by name</a><a class="{% if sort_by == 'average' %}active{% endif %}" href="{{ url_for('index', sort='average') }}">Highest average</a></div></div>
+    {% if students %}<div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Class</th><th>Total</th><th>Average</th><th>Grade</th><th>Actions</th></tr></thead><tbody>
+    {% for s in students %}<tr><td>{{ s.student_id }}</td><td>{{ s.name }}</td><td>{{ s['class'] }}</td><td>{{ s.total }}</td><td>{{ s.average }}%</td><td><span class="grade">{{ s.grade }}</span></td><td class="actions"><a href="{{ url_for('student_report', student_id=s.student_id) }}">Report</a><form action="{{ url_for('delete_student', student_id=s.student_id) }}" method="post" onsubmit="return confirm('Delete this student?')"><button class="delete" type="submit">Delete</button></form></td></tr>{% endfor %}
+    </tbody></table></div>{% else %}<p class="empty">No student records yet. Use the form above to add the first student.</p>{% endif %}
+  </section>
+  <p class="footer">Student Result Management System · Python + Flask + JSON</p>
+</main>
+</body></html>
